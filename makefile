@@ -1,7 +1,7 @@
 OBJ=elementArbre.o arbre.o encodage.o modele.o arg.o translation.o showVector.o EM.o
 HEADER=elementArbre.h arbre.h encodage.h modele.h arg.h translation.h EM.h showVector.h
 
-all: main.exe tokeniseur.exe perplex.exe translator.exe
+all: main.exe tokeniseur.exe perplex.exe translator.exe codetomot.exe
 	rm -f *.o
 
 ################################ Executable #####################################
