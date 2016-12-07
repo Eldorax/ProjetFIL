@@ -62,4 +62,4 @@ codetomot.exe: codetomot.c
 	g++ -Wall -o codetomot.exe codetomot.c
 
 clean:
-	rm -f *.o *~ *.exe
+	rm -f *.o *~ *.exe treillis.txt

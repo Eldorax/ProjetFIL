@@ -38,9 +38,13 @@ class Translation
 		map < vector<unsigned int>, double > perplex;
 		vector< vector<sommet_treillis> > treillis;               //Treillis : treillis[0][0].token/proba_emission -> 1er etat, 1ere possibilité, le token/proba_emmission
 		map < unsigned int, vector<transElem> >	translate_table;  // contien une table de traduction
+		map <unsigned int, string> codetomot;                    //
 
 	public:
 		Translation();
+
+		void initCodetomot(string);
+		string code2Mot(vector<unsigned int>);
 
 		void showPerplex(void);                                                   //Affiche la perplexité des phrases de la traduction.
 		void showTreillis(void);												  //Affiche le treillis.

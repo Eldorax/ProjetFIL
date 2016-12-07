@@ -34,7 +34,7 @@ int main(int argc, char ** argv)
 	//Construction des arbres pour le calcul de la table de traduction.
 	Arbre arbre_fr(argv[0]);
 	Arbre arbre_en(argv[1]);
-
+	
 	//Creation des listes de phrases tokénisé en francais et en anglais.
 	//(tokenisation ligne par line du corpu fr et en)
 	Em em;
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
 	
 	//Création de la table de traduction.
 	em.calcEm(10);       //nb d'iterration de l'algo EM.
-	em.out("table.txt"); 
+	em.out("table.txt");
 	
 	//tokénisation du corpus d'apprentissage.
 	token_list = arbre_fr.tokenization(argv[4], sep);
@@ -64,8 +64,11 @@ int main(int argc, char ** argv)
 
 	translation.initTreillis("treillis.txt");
 
+	//Initialistion du décodage des tokens.	
+	translation.initCodetomot(argv[0]);
+
 	//cout << ShowVector(translation.calcTreillisEmmission()) << endl;
-	cout << ShowVector(translation.calcTreillis(modele)) << endl;
+	cout << translation.code2Mot(translation.calcTreillis(modele)) << endl;
 
 	return 0;
 }

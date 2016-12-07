@@ -88,7 +88,7 @@ double Translation::calcPerplex(string phrase, Arbre* arbre, vector<unsigned int
 void Translation::showPerplex(void)
 {
 	for (map<vector<unsigned int>, double>::iterator it = perplex.begin(); it != perplex.end(); it++)
-		cout << ShowVector(it->first) << " => " << (double) it->second << '\n';
+		cout << code2Mot(it->first) << " => " << (double) it->second << '\n';
 }
 
 void Translation::showTreillis(void)
@@ -149,6 +149,7 @@ sommet_treillis getSommetTFromLine(string line)
 
 void Translation::initTreillis(string file_name)
 {
+	treillis.clear();
 	ifstream file(file_name, ios::in);
 	string read_buffer;
 	vector<sommet_treillis> etat_temp;
@@ -338,14 +339,60 @@ void Translation::createTreillis(string dest_file, vector<unsigned int> phrase)
 	for( unsigned int i = 0; i < phrase.size(); i++)
 	{
 		file << "%col " << i << endl;
-		for( unsigned int j = 0; j < translate_table[ phrase[i] ].size(); j++)
+
+		if( translate_table[ phrase[i] ].size() == 0) //si la traduction est inconnu
+			file << '0' << ' ' << "15" << endl;
+		else
 		{
-			file << translate_table[phrase[i]][j].trad << ' ' << translate_table[phrase[i]][j].proba << endl;
+			for( unsigned int j = 0; j < translate_table[ phrase[i] ].size(); j++)
+			{
+				file << translate_table[phrase[i]][j].trad << ' ' << translate_table[phrase[i]][j].proba << endl;
+			}
 		}
 	}
 }
 
 
+void Translation::initCodetomot(string file_name)
+{
+	ifstream file(file_name, ios::in);
+	if( file )
+	{
+		unsigned int i;
+		unsigned int token;
+		string buffer, mot, token_str;
+		while ( getline(file, buffer) )
+		{
+			mot.clear();
+			token_str.clear();
+			for( i = 0; buffer[i] != ' '; i++)
+			{
+				mot += buffer[i];
+			}
+			i++;
+			for(; i < buffer.size(); i++)
+			{
+				token_str += buffer[i];
+			}
+			token = (unsigned int) atoll(token_str.c_str());
+			codetomot[token] = mot;
+		}
+		codetomot[0] = "TOKEN_INCONNU";
+
+	}
+
+}
+
+string Translation::code2Mot(vector<unsigned int> tokens)
+{
+	string res;
+	for( unsigned int i = 0; i < tokens.size(); i++)
+	{
+		res += codetomot[tokens[i]];
+		res += ' ';
+	}
+	return res;
+}
 
 
 

@@ -37,7 +37,7 @@ int main(int argc, char ** argv)
 	//Construction des n_gram de taille 2 (bigram).
 	modele.NGramConstructor(2); 
 	//Pour afficher les compte dans le fichier donné.   
-	//modele.ShowNGram("n_gram.txt");
+	modele.ShowNGram("n_gram.txt");
 	
 	// Calcule des probabilitées.
 	modele.probasConstructor(2);
@@ -48,6 +48,7 @@ int main(int argc, char ** argv)
 	translation.calcPerplexFromFile(argv[2], &arbre, sep, modele);
 
 	//Affichage des tokens -> perplexité.
+	translation.initCodetomot(argv[0]);
 	translation.showPerplex();
 
 	return 0;

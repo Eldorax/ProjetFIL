@@ -160,6 +160,14 @@ int main(int argc, char ** argv)
 	translation.createTreillis(argv[4], token_list);
 	*/
 	
+	if ( argc < 7 )
+	{
+		cout << "Mauvaise utilisation :\n";
+		cout << "main.exe <lexique fr> <lexique en> <corpus bila fr> <corpus bila en> <corpus de base fr (proba trans)> <fichier de phrase à traduire>\n";
+		exit(1);
+	}
+
+
 	///////////////// EM /////////////////
 	unsigned int list_sep[12] = {44, 32, 10, 9, 91, 93, 46, 63, 33, 58, 59, 95};
 	vector <unsigned int> sep(0);
@@ -172,7 +180,7 @@ int main(int argc, char ** argv)
 	Arbre arbre_en(argv[2]);
 
 	//Creation des listes de phrases tokénisé en francais et en anglais.
-	/*	
+
 	Em em;
 	em.initTokensFr(argv[3], arbre_fr, sep);
 	em.initTokensEn(argv[4], arbre_en, sep);
@@ -180,9 +188,8 @@ int main(int argc, char ** argv)
 	//Création de la table de traduction.
 	em.calcEm(10);
 	em.out("table.txt");
-	*/
+
 	//tokénisation du corpus d'apprentissage.
-	
 	token_list = arbre_fr.tokenization(argv[5], sep);
 
 	//Création du modéle à partir du corpus.
@@ -195,14 +202,27 @@ int main(int argc, char ** argv)
 	//Creation du treillis par rapport au texte a traduire.
 	Translation translation = Translation();
 	translation.initTranslationTable("table.txt");
-	string phrase (argv[6]);
-	token_phrase = arbre_en.tokenizationStr(phrase, sep);
-	translation.createTreillis("treillis.txt", token_phrase);
 
-	translation.initTreillis("treillis.txt");
+	// Traitement de chaque ligne du fichier
+	ifstream file(argv[6], ios::in);
+	if( !file )
+		cout << "Fichier non valide\n";
 
-	//cout << ShowVector(translation.calcTreillisEmmission()) << endl;
-	cout << ShowVector(translation.calcTreillis(modele)) << endl;
+	//Initialistion du décodage des tokens.	
+	translation.initCodetomot(argv[1]);
+
+	string phrase;
+	while( getline(file, phrase) )
+	{
+		token_phrase = arbre_en.tokenizationStr(phrase, sep);
+		translation.createTreillis("treillis.txt", token_phrase);
+		translation.initTreillis("treillis.txt");
+		cout << "----- " << phrase << "-----" << endl;
+		cout << "emi : " << translation.code2Mot(translation.calcTreillisEmmission()) << endl;
+		cout << "viterbi : " << translation.code2Mot(translation.calcTreillis(modele)) << endl;
+	}
+	file.close();
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 	//modele.ShowProbas();
